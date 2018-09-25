@@ -39,6 +39,7 @@
       this.btChooseSaveFile.TabIndex = 0;
       this.btChooseSaveFile.Text = "Выберите путь";
       this.btChooseSaveFile.UseVisualStyleBackColor = true;
+      this.btChooseSaveFile.Click += new System.EventHandler(this.btChooseSaveFile_Click);
       // 
       // MainForm
       // 
