@@ -8,10 +8,11 @@ namespace ParseMedrk
 {
   public class Element
   {
-    public string NameElement { get; set; }
-    public string NameCategory { get; set; }
-    public string NameSubCategory { get; set; }
-    public string Price { get; set; }
-    public string Description { get; set; }
+    public string NameElement { get; set; } = string.Empty;
+    public string NameCategory { get; set; } = string.Empty;
+    public string NameSubCategory { get; set; } = string.Empty;
+    public string Price { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public long Id { get; set; } = 0;
   }
 }
