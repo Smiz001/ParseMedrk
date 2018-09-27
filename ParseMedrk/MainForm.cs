@@ -22,7 +22,7 @@ namespace ParseMedrk
     {
       using (var sw = new StreamWriter(@"D:\Medr.csv"))
       {
-        sw.WriteLine("Категория;Подкатегория;Id;Наименование;Цена;Описание");
+        sw.WriteLine("Категория;Подкатегория;Id;Наименование;Цена;Описание;Ссылка на картинку");
       }
       IHtmlCollection<IElement> collections;
       using (var webClient = new WebClient())
@@ -165,12 +165,18 @@ namespace ParseMedrk
 
       var about = document.GetElementById("about");
       var childs = about.Children;
-
       foreach (var p in childs)
       {
         if (p.TagName == "P")
           elem.Description += p.TextContent;
       }
+
+      var image = document.GetElementsByClassName("lb-image");
+      if(image.Length>0)
+      {
+        elem.UrlImage = image[0].GetAttribute("src");
+      }
+
       WriteInFileElement(elem);
     }
 
@@ -179,7 +185,7 @@ namespace ParseMedrk
       using (var sw = new StreamWriter(new FileStream(@"D:\Medr.csv", FileMode.Open), Encoding.UTF8))
       {
         sw.BaseStream.Position = sw.BaseStream.Length;
-        sw.WriteLine($@"'{elem.NameCategory}';'{elem.NameSubCategory}';'{elem.Id}';'{elem.NameElement}';'{elem.Price}';'{elem.Description}'");
+        sw.WriteLine($@"'{elem.NameCategory}';'{elem.NameSubCategory}';'{elem.Id}';'{elem.NameElement}';'{elem.Price}';'{elem.Description.Replace("'","")}';'{elem.UrlImage}'");
       }
     }
   }
