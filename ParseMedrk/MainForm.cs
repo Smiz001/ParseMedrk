@@ -172,7 +172,7 @@ namespace ParseMedrk
           elem.Description += p.TextContent;
       }
 
-      var image = document.GetElementsByClassName("lb-image");
+      var image = document.GetElementsByClassName("img-responsive img-rounded item-big-img");
       if(image.Length>0)
       {
         elem.UrlImage = image[0].GetAttribute("src");
