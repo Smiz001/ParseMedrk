@@ -18,9 +18,12 @@ namespace ParseMedrk
     }
 
     private string mainLink = @"http://www.medrk.ru/shop/";
+    private string direcPath = @"D:\ParserInfo\Medr\";
+    private string mainFilePath = @"D:\ParserInfo\Medr\Medr.csv";
+
     private void btChooseSaveFile_Click(object sender, EventArgs e)
     {
-      using (var sw = new StreamWriter(@"D:\Medr.csv"))
+      using (var sw = new StreamWriter(mainFilePath))
       {
         sw.WriteLine("Категория;Подкатегория;Id;Наименование;Цена;Описание;Ссылка на картинку");
       }
@@ -176,6 +179,7 @@ namespace ParseMedrk
       if(image.Length>0)
       {
         elem.UrlImage = image[0].GetAttribute("src");
+        webClient.DownloadFile(elem.UrlImage, $"{direcPath}{elem.NameElement}.jpg");
       }
 
       WriteInFileElement(elem);
