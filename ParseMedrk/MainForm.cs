@@ -77,13 +77,14 @@ namespace ParseMedrk
         foreach (var sub in subCat)
         {
           var href = sub.GetElementsByClassName("hidden-xs")[0].GetAttribute("href").Replace("/shop/", "");
-            ParseSubCategory($"{mainLink}{href}&kol_page=25", nameCategory, sub.TextContent);
+          ParseSubCategory($"{mainLink}{href}&kol_page=25", nameCategory, sub.TextContent);
         }
       }
     }
 
     private void ParseSubCategory(string urlSubCategory, string nameCat, string nameSubCat)
     {
+      var nameSubCatLocl = nameSubCat.Replace("  ", "").Replace("\n", "");
       var random = new Random();
       using (var webClient = new WebClient())
       {
@@ -114,7 +115,7 @@ namespace ParseMedrk
           var collectionItems = document.GetElementsByClassName("row catalog-product hidden-xs");
           foreach (var element in collectionItems)
           {
-            var elem = new Element { NameCategory = nameCat, NameSubCategory = nameSubCat };
+            var elem = new Element { NameCategory = nameCat, NameSubCategory = nameSubCatLocl };
             var s16 = element.GetElementsByClassName("s16");
             var priceGray = element.GetElementsByClassName("price-gray");
             var priceGreen = element.GetElementsByClassName("price-green");
