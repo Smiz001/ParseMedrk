@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -10,6 +11,7 @@ using System.Threading;
 using System.Windows.Forms;
 using AngleSharp.Dom;
 using AngleSharp.Parser.Html;
+using ParseMedrk.Export;
 
 namespace ParseMedrk
 {
@@ -140,12 +142,15 @@ namespace ParseMedrk
               elem.Price = priceGray[0].TextContent.Replace(" ", "");
               var regex = new Regex(@"(\d+\.\d+₽)");
               elem.Price = regex.Match(elem.Price).Value;
+              elem.Price = regex.Match(elem.Price).Value;
+              elem.Price = elem.Price.Replace("₽", "").Replace(".", ",");
             }
             else if (priceGreen.Length > 0)
             {
               elem.Price = priceGreen[0].TextContent.Replace(" ", "");
               var regex = new Regex(@"(\d+\.\d+₽)");
               elem.Price = regex.Match(elem.Price).Value;
+              elem.Price = elem.Price.Replace("₽","").Replace(".", ",");
             }
             else if (priceRed.Length > 0)
             {
@@ -272,22 +277,23 @@ namespace ParseMedrk
     {
       if (listElements.Count > 0)
       {
-        sfdExport.Title = "Сохранение данных";
-        if (sfdExport.ShowDialog() == DialogResult.OK)
-        {
-          mainFilePath = sfdExport.FileName;
-          using (var sw = new StreamWriter(mainFilePath))
-          {
-            sw.WriteLine("Категория;Подкатегория;Id;Наименование;Цена;Описание;Информация с таблиц;Ссылка на картинку");
+        //sfdExport.Title = "Сохранение данных";
+        //if (sfdExport.ShowDialog() == DialogResult.OK)
+        //{
+        //  mainFilePath = sfdExport.FileName;
+        //  using (var sw = new StreamWriter(mainFilePath))
+        //  {
+        //    sw.WriteLine("Категория;Подкатегория;Id;Наименование;Цена;Описание;Информация с таблиц;Ссылка на картинку");
 
-            foreach (var element in listElements)
-            {
-              WriteInFileElement(element, sw);
-            }
-          }
-
-          MessageBox.Show("Выгрузка выполнена");
-        }
+        //    foreach (var element in listElements)
+        //    {
+        //      WriteInFileElement(element, sw);
+        //    }
+        //  }
+        //  MessageBox.Show("Выгрузка выполнена");
+        //}
+        var export = new Excel(listElements.ToList());
+        export.ExecuteExport();
       }
     }
 
@@ -324,7 +330,6 @@ namespace ParseMedrk
             {
               df.ShowDialog();
             }
-            //Process.Start(url);
           }
         }
       }
