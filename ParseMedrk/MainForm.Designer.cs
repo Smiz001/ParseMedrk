@@ -31,10 +31,12 @@
       this.components = new System.ComponentModel.Container();
       this.btDownloadData = new System.Windows.Forms.Button();
       this.dgvMainInfo = new System.Windows.Forms.DataGridView();
-      this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.cmsForDg = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.btExport = new System.Windows.Forms.Button();
       this.sfdExport = new System.Windows.Forms.SaveFileDialog();
+      this.показатьОписаниеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       ((System.ComponentModel.ISupportInitialize)(this.dgvMainInfo)).BeginInit();
+      this.cmsForDg.SuspendLayout();
       this.SuspendLayout();
       // 
       // btDownloadData
@@ -54,17 +56,22 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.dgvMainInfo.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+      this.dgvMainInfo.ContextMenuStrip = this.cmsForDg;
       this.dgvMainInfo.Location = new System.Drawing.Point(12, 12);
       this.dgvMainInfo.Name = "dgvMainInfo";
       this.dgvMainInfo.ReadOnly = true;
       this.dgvMainInfo.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
       this.dgvMainInfo.Size = new System.Drawing.Size(833, 437);
       this.dgvMainInfo.TabIndex = 1;
+      this.dgvMainInfo.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvMainInfo_CellClick);
+      this.dgvMainInfo.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvMainInfo_CellMouseDown);
       // 
-      // contextMenuStrip1
+      // cmsForDg
       // 
-      this.contextMenuStrip1.Name = "contextMenuStrip1";
-      this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+      this.cmsForDg.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.показатьОписаниеToolStripMenuItem});
+      this.cmsForDg.Name = "contextMenuStrip1";
+      this.cmsForDg.Size = new System.Drawing.Size(181, 26);
       // 
       // btExport
       // 
@@ -76,6 +83,13 @@
       this.btExport.Text = "Экспортировать";
       this.btExport.UseVisualStyleBackColor = true;
       this.btExport.Click += new System.EventHandler(this.btExport_Click);
+      // 
+      // показатьОписаниеToolStripMenuItem
+      // 
+      this.показатьОписаниеToolStripMenuItem.Name = "показатьОписаниеToolStripMenuItem";
+      this.показатьОписаниеToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+      this.показатьОписаниеToolStripMenuItem.Text = "Показать описание";
+      this.показатьОписаниеToolStripMenuItem.Click += new System.EventHandler(this.показатьОписаниеToolStripMenuItem_Click);
       // 
       // MainForm
       // 
@@ -89,6 +103,7 @@
       this.Text = "Парсер Медремкомплект";
       this.Load += new System.EventHandler(this.MainForm_Load);
       ((System.ComponentModel.ISupportInitialize)(this.dgvMainInfo)).EndInit();
+      this.cmsForDg.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -97,9 +112,10 @@
 
     private System.Windows.Forms.Button btDownloadData;
     private System.Windows.Forms.DataGridView dgvMainInfo;
-    private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+    private System.Windows.Forms.ContextMenuStrip cmsForDg;
     private System.Windows.Forms.Button btExport;
     private System.Windows.Forms.SaveFileDialog sfdExport;
+    private System.Windows.Forms.ToolStripMenuItem показатьОписаниеToolStripMenuItem;
   }
 }
 

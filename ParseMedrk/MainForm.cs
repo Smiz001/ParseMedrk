@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -257,19 +258,21 @@ namespace ParseMedrk
       colId.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
       dgvMainInfo.Columns.Add(colId);
 
-      DataGridViewColumn colUrl = new DataGridViewTextBoxColumn();
+      DataGridViewColumn colUrl = new DataGridViewLinkColumn();
       colUrl.DataPropertyName = "UrlImage";
       colUrl.HeaderText = "Адрес изображения";
       colUrl.Name = "UrlImage";
       colUrl.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
       dgvMainInfo.Columns.Add(colUrl);
+      
+      sfdExport.Filter = "CSV files(*.csv)|*.csv";
     }
 
     private void btExport_Click(object sender, EventArgs e)
     {
       if (listElements.Count > 0)
       {
-        sfdExport.Filter = "CSV files(*.csv)|*.csv";
+        sfdExport.Title = "Сохранение данных";
         if (sfdExport.ShowDialog() == DialogResult.OK)
         {
           mainFilePath = sfdExport.FileName;
@@ -286,6 +289,58 @@ namespace ParseMedrk
           MessageBox.Show("Выгрузка выполнена");
         }
       }
+    }
+
+    private void dgvMainInfo_CellClick(object sender, DataGridViewCellEventArgs e)
+    {
+      if (dgvMainInfo.SelectedColumns.Count == 0)
+      {
+        if (dgvMainInfo.SelectedRows.Count == 0)
+        {
+          if (dgvMainInfo.SelectedCells.Count == 1)
+          {
+            var cell = dgvMainInfo.SelectedCells[0];
+            if (dgvMainInfo.Columns[cell.ColumnIndex].Name == "UrlImage")
+            {
+              var url = dgvMainInfo.SelectedCells[0].Value.ToString();
+              Process.Start(url);
+            }
+          }
+        }
+      }
+    }
+
+    private void показатьОписаниеToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      if (dgvMainInfo.SelectedColumns.Count == 0)
+      {
+        if (dgvMainInfo.SelectedRows.Count == 0)
+        {
+          if (dgvMainInfo.SelectedCells.Count == 1)
+          {
+            var cell = dgvMainInfo.SelectedCells[0];
+            var elem = dgvMainInfo.Rows[cell.RowIndex].DataBoundItem as Element;
+            using (var df = new DescriptionForm(elem))
+            {
+              df.ShowDialog();
+            }
+            //Process.Start(url);
+          }
+        }
+      }
+    }
+
+    private void dgvMainInfo_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+    {
+      if (e.Button == MouseButtons.Right)
+      {
+        // Add this
+        dgvMainInfo.CurrentCell = dgvMainInfo.Rows[e.RowIndex].Cells[e.ColumnIndex];
+        // Can leave these here - doesn't hurt
+        dgvMainInfo.Rows[e.RowIndex].Selected = true;
+        dgvMainInfo.Focus();
+      }
+
     }
   }
 }
