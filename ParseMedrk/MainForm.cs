@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -20,12 +22,13 @@ namespace ParseMedrk
     private string mainLink = @"http://www.medrk.ru/shop/";
     private string direcPath = @"D:\ParserInfo\Medr\";
     private string mainFilePath = @"D:\ParserInfo\Medr\Medr.csv";
+    private BindingList<Element> listElements = new BindingList<Element>();
 
-    private void btChooseSaveFile_Click(object sender, EventArgs e)
+    private void btDownloadData_Click(object sender, EventArgs e)
     {
       using (var sw = new StreamWriter(mainFilePath))
       {
-        sw.WriteLine("Категория;Подкатегория;Id;Наименование;Цена;Описание;Ссылка на картинку");
+        sw.WriteLine("Категория;Подкатегория;Id;Наименование;Цена;Описание;Информация с таблиц;Ссылка на картинку");
       }
       IHtmlCollection<IElement> collections;
       using (var webClient = new WebClient())
@@ -41,9 +44,13 @@ namespace ParseMedrk
         collections = document.GetElementsByClassName("category-item");
       }
       if (collections.Length > 0)
+      {
+        Cursor.Current = Cursors.WaitCursor;
         ParseAll(collections);
-
-      MessageBox.Show("Completed");
+        Cursor.Current = Cursors.Default;
+      }
+      dgvMainInfo.DataSource = listElements;
+      MessageBox.Show("Загрузка выполнена");
     }
 
     private void ParseAll(IHtmlCollection<IElement> collections)
@@ -179,19 +186,88 @@ namespace ParseMedrk
       if(image.Length>0)
       {
         elem.UrlImage = image[0].GetAttribute("src");
-        webClient.DownloadFile(elem.UrlImage, $"{direcPath}{elem.NameElement}.jpg");
+          //webClient.DownloadFile(elem.UrlImage, $"{direcPath}{elem.NameElement}.jpg");
       }
 
-      WriteInFileElement(elem);
+      var table = document.GetElementsByTagName("TABLE");
+      if (table.Length > 0)
+        ParseTable(elem, table[table.Length-1]);
+
+      //WriteInFileElement(elem);
+      listElements.Add(elem);
     }
 
     private void WriteInFileElement(Element elem)
     {
-      using (var sw = new StreamWriter(new FileStream(@"D:\Medr.csv", FileMode.Open), Encoding.UTF8))
+      using (var sw = new StreamWriter(new FileStream(mainFilePath, FileMode.Open), Encoding.UTF8))
       {
         sw.BaseStream.Position = sw.BaseStream.Length;
-        sw.WriteLine($@"'{elem.NameCategory}';'{elem.NameSubCategory}';'{elem.Id}';'{elem.NameElement}';'{elem.Price}';'{elem.Description.Replace("'","")}';'{elem.UrlImage}'");
+        sw.WriteLine($@"'{elem.NameCategory}';'{elem.NameSubCategory}';'{elem.Id}';'{elem.NameElement}';'{elem.Price}';'{elem.Description.Replace("'","")}';'{elem.InfoFromTable.Replace("'", "")}';'{elem.UrlImage}'");
       }
+    }
+
+    private void ParseTable(Element elem, IElement htmlElement)
+    {
+      var trs = htmlElement.GetElementsByTagName("TR");
+      var sb = new StringBuilder();
+
+      for (int i = 1; i < trs.Length; i++)
+      {
+        var tds = trs[i].GetElementsByTagName("td");
+        for (int j = 0; j < tds.Length; j++)
+        {
+          sb.Append($"{tds[j].TextContent},");
+        }
+        sb.AppendLine();
+      }
+      elem.InfoFromTable = sb.ToString();
+    }
+
+    private void MainForm_Load(object sender, EventArgs e)
+    {
+      dgvMainInfo.AutoGenerateColumns = false;
+
+      DataGridViewColumn colCat = new DataGridViewTextBoxColumn();
+      colCat.DataPropertyName = "NameCategory";
+      colCat.HeaderText = "Категория";
+      colCat.Name = "NameCategory";
+      colCat.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+      dgvMainInfo.Columns.Add(colCat);
+
+      DataGridViewColumn colSubCat = new DataGridViewTextBoxColumn();
+      colSubCat.DataPropertyName = "NameSubCategory";
+      colSubCat.HeaderText = "Полкатегория";
+      colSubCat.Name = "NameSubCategory";
+      colCat.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+      dgvMainInfo.Columns.Add(colSubCat);
+
+      DataGridViewColumn colElem = new DataGridViewTextBoxColumn();
+      colElem.DataPropertyName = "NameElement";
+      colElem.HeaderText = "Наименование";
+      colElem.Name = "NameElement";
+      colElem.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+      dgvMainInfo.Columns.Add(colElem);
+
+      DataGridViewColumn colPrice = new DataGridViewTextBoxColumn();
+      colPrice.DataPropertyName = "Price";
+      colPrice.HeaderText = "Цена";
+      colPrice.Name = "Price";
+      colPrice.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+      dgvMainInfo.Columns.Add(colPrice);
+
+      DataGridViewColumn colId = new DataGridViewTextBoxColumn();
+      colId.DataPropertyName = "Id";
+      colId.HeaderText = "Id";
+      colId.Name = "Id";
+      colId.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+      dgvMainInfo.Columns.Add(colId);
+
+      DataGridViewColumn colUrl = new DataGridViewTextBoxColumn();
+      colUrl.DataPropertyName = "UrlImage";
+      colUrl.HeaderText = "Адрес изображения";
+      colUrl.Name = "UrlImage";
+      colUrl.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+      dgvMainInfo.Columns.Add(colUrl);
     }
   }
 }

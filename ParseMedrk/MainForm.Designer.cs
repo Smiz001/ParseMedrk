@@ -28,34 +28,63 @@
     /// </summary>
     private void InitializeComponent()
     {
-      this.btChooseSaveFile = new System.Windows.Forms.Button();
+      this.components = new System.ComponentModel.Container();
+      this.btDownloadData = new System.Windows.Forms.Button();
+      this.dgvMainInfo = new System.Windows.Forms.DataGridView();
+      this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+      ((System.ComponentModel.ISupportInitialize)(this.dgvMainInfo)).BeginInit();
       this.SuspendLayout();
       // 
-      // btChooseSaveFile
+      // btDownloadData
       // 
-      this.btChooseSaveFile.Location = new System.Drawing.Point(12, 51);
-      this.btChooseSaveFile.Name = "btChooseSaveFile";
-      this.btChooseSaveFile.Size = new System.Drawing.Size(121, 23);
-      this.btChooseSaveFile.TabIndex = 0;
-      this.btChooseSaveFile.Text = "Выберите путь";
-      this.btChooseSaveFile.UseVisualStyleBackColor = true;
-      this.btChooseSaveFile.Click += new System.EventHandler(this.btChooseSaveFile_Click);
+      this.btDownloadData.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btDownloadData.Location = new System.Drawing.Point(667, 12);
+      this.btDownloadData.Name = "btDownloadData";
+      this.btDownloadData.Size = new System.Drawing.Size(121, 23);
+      this.btDownloadData.TabIndex = 0;
+      this.btDownloadData.Text = "Загрузить данные";
+      this.btDownloadData.UseVisualStyleBackColor = true;
+      this.btDownloadData.Click += new System.EventHandler(this.btDownloadData_Click);
+      // 
+      // dgvMainInfo
+      // 
+      this.dgvMainInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.dgvMainInfo.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+      this.dgvMainInfo.Location = new System.Drawing.Point(12, 12);
+      this.dgvMainInfo.MultiSelect = false;
+      this.dgvMainInfo.Name = "dgvMainInfo";
+      this.dgvMainInfo.ReadOnly = true;
+      this.dgvMainInfo.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+      this.dgvMainInfo.Size = new System.Drawing.Size(649, 426);
+      this.dgvMainInfo.TabIndex = 1;
+      // 
+      // contextMenuStrip1
+      // 
+      this.contextMenuStrip1.Name = "contextMenuStrip1";
+      this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
       // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(800, 450);
-      this.Controls.Add(this.btChooseSaveFile);
+      this.Controls.Add(this.dgvMainInfo);
+      this.Controls.Add(this.btDownloadData);
       this.Name = "MainForm";
       this.Text = "Парсер Медремкомплект";
+      this.Load += new System.EventHandler(this.MainForm_Load);
+      ((System.ComponentModel.ISupportInitialize)(this.dgvMainInfo)).EndInit();
       this.ResumeLayout(false);
 
     }
 
     #endregion
 
-    private System.Windows.Forms.Button btChooseSaveFile;
+    private System.Windows.Forms.Button btDownloadData;
+    private System.Windows.Forms.DataGridView dgvMainInfo;
+    private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
   }
 }
 
