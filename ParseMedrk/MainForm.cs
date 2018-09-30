@@ -26,10 +26,6 @@ namespace ParseMedrk
 
     private void btDownloadData_Click(object sender, EventArgs e)
     {
-      using (var sw = new StreamWriter(mainFilePath))
-      {
-        sw.WriteLine("Категория;Подкатегория;Id;Наименование;Цена;Описание;Информация с таблиц;Ссылка на картинку");
-      }
       IHtmlCollection<IElement> collections;
       using (var webClient = new WebClient())
       {
@@ -54,12 +50,12 @@ namespace ParseMedrk
     }
 
     private void ParseAll(IHtmlCollection<IElement> collections)
-    {        
+    {
       var random = new Random();
-   
+
       foreach (var element in collections)
       {
-        var href = element.GetElementsByClassName("hidden-xs")[0].GetAttribute("href").Replace("/shop/","");
+        var href = element.GetElementsByClassName("hidden-xs")[0].GetAttribute("href").Replace("/shop/", "");
         var nameCategory = element.GetElementsByClassName("img-responsive")[0].GetAttribute("alt");
         var ul = element.GetElementsByClassName("catalog-parts hidden-xs");
         if (ul.Length > 0)
@@ -110,18 +106,18 @@ namespace ParseMedrk
         int countPage = 1;
         var countPageElements = document.GetElementsByClassName("col-md-9 col-sm-9 page-amount")[0].GetElementsByTagName("LI");
 
-        if(countPageElements.Length > 2)
+        if (countPageElements.Length > 2)
         {
           countPage = countPageElements[0].GetElementsByTagName("LI").Length - 1;
         }
 
         for (int i = 1; i <= countPage; i++)
         {
-          Thread.Sleep(random.Next(1000,3000));
+          Thread.Sleep(random.Next(1000, 3000));
           urlSubCategory += $@"&page={i}/";
           responce = webClient.DownloadString(urlSubCategory);
           document = parser.Parse(responce);
-          
+
           var collectionItems = document.GetElementsByClassName("row catalog-product hidden-xs");
           foreach (var element in collectionItems)
           {
@@ -183,27 +179,26 @@ namespace ParseMedrk
       }
 
       var image = document.GetElementsByClassName("img-responsive img-rounded item-big-img");
-      if(image.Length>0)
+      if (image.Length > 0)
       {
         elem.UrlImage = image[0].GetAttribute("src");
-          //webClient.DownloadFile(elem.UrlImage, $"{direcPath}{elem.NameElement}.jpg");
+        //webClient.DownloadFile(elem.UrlImage, $"{direcPath}{elem.NameElement}.jpg");
       }
 
       var table = document.GetElementsByTagName("TABLE");
       if (table.Length > 0)
-        ParseTable(elem, table[table.Length-1]);
+        ParseTable(elem, table[table.Length - 1]);
 
       //WriteInFileElement(elem);
       listElements.Add(elem);
     }
 
-    private void WriteInFileElement(Element elem)
+    private void WriteInFileElement(Element elem, StreamWriter sw)
     {
-      using (var sw = new StreamWriter(new FileStream(mainFilePath, FileMode.Open), Encoding.UTF8))
-      {
-        sw.BaseStream.Position = sw.BaseStream.Length;
-        sw.WriteLine($@"'{elem.NameCategory}';'{elem.NameSubCategory}';'{elem.Id}';'{elem.NameElement}';'{elem.Price}';'{elem.Description.Replace("'","")}';'{elem.InfoFromTable.Replace("'", "")}';'{elem.UrlImage}'");
-      }
+
+      sw.BaseStream.Position = sw.BaseStream.Length;
+      sw.WriteLine($@"'{elem.NameCategory}';'{elem.NameSubCategory}';'{elem.Id}';'{elem.NameElement}';'{elem.Price}';'{elem.Description.Replace("'", "")}';'{elem.InfoFromTable.Replace("'", "")}';'{elem.UrlImage}'");
+
     }
 
     private void ParseTable(Element elem, IElement htmlElement)
@@ -268,6 +263,29 @@ namespace ParseMedrk
       colUrl.Name = "UrlImage";
       colUrl.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
       dgvMainInfo.Columns.Add(colUrl);
+    }
+
+    private void btExport_Click(object sender, EventArgs e)
+    {
+      if (listElements.Count > 0)
+      {
+        sfdExport.Filter = "CSV files(*.csv)|*.csv";
+        if (sfdExport.ShowDialog() == DialogResult.OK)
+        {
+          mainFilePath = sfdExport.FileName;
+          using (var sw = new StreamWriter(mainFilePath))
+          {
+            sw.WriteLine("Категория;Подкатегория;Id;Наименование;Цена;Описание;Информация с таблиц;Ссылка на картинку");
+
+            foreach (var element in listElements)
+            {
+              WriteInFileElement(element, sw);
+            }
+          }
+
+          MessageBox.Show("Выгрузка выполнена");
+        }
+      }
     }
   }
 }
