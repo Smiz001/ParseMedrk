@@ -192,36 +192,37 @@ namespace ParseMedrk
       }
 
       var table = document.GetElementsByTagName("TABLE");
-      if (table.Length > 0)
-        ParseTable(elem, table[table.Length - 1]);
 
+      for (int i = 0; i < table.Length; i++)
+      {
+        if (table[i].TextContent.Contains("Наименование") && elem.Characteristics.Count == 0)
+          ParseTable(elem, table[i]);
+      }
       //WriteInFileElement(elem);
       listElements.Add(elem);
     }
 
     private void WriteInFileElement(Element elem, StreamWriter sw)
     {
-
       sw.BaseStream.Position = sw.BaseStream.Length;
       sw.WriteLine($@"'{elem.NameCategory}';'{elem.NameSubCategory}';'{elem.Id}';'{elem.NameElement}';'{elem.Price}';'{elem.Description.Replace("'", "")}';'{elem.InfoFromTable.Replace("'", "")}';'{elem.UrlImage}'");
-
     }
 
     private void ParseTable(Element elem, IElement htmlElement)
     {
       var trs = htmlElement.GetElementsByTagName("TR");
-      var sb = new StringBuilder();
 
       for (int i = 1; i < trs.Length; i++)
       {
         var tds = trs[i].GetElementsByTagName("td");
-        for (int j = 0; j < tds.Length; j++)
+        if (tds.Length >= 2)
         {
-          sb.Append($"{tds[j].TextContent},");
+          if (tds[0].TextContent != "Наименование")
+          {
+            elem.Characteristics.Add(new Characteristic { Name = tds[0].TextContent, Value = tds[1].TextContent });
+          }
         }
-        sb.AppendLine();
       }
-      elem.InfoFromTable = sb.ToString();
     }
 
     private void MainForm_Load(object sender, EventArgs e)
@@ -239,7 +240,7 @@ namespace ParseMedrk
       colSubCat.DataPropertyName = "NameSubCategory";
       colSubCat.HeaderText = "Полкатегория";
       colSubCat.Name = "NameSubCategory";
-      colCat.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+      colSubCat.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
       dgvMainInfo.Columns.Add(colSubCat);
 
       DataGridViewColumn colElem = new DataGridViewTextBoxColumn();

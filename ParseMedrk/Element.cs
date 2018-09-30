@@ -19,5 +19,7 @@ namespace ParseMedrk
     public string UrlImage { get; set; } = string.Empty;
     [Browsable(false)]
     public string InfoFromTable { get; set; } = string.Empty;
+    [Browsable(false)]
+    public List<Characteristic> Characteristics { get; set; } = new List<Characteristic>();
   }
 }
