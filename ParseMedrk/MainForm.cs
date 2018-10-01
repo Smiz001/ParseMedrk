@@ -184,7 +184,18 @@ namespace ParseMedrk
           elem.Description += p.TextContent;
       }
 
-      var image = document.GetElementsByClassName("img-responsive img-rounded item-big-img");
+      var image = document.GetElementsByClassName("col-md-3 col-sm-3 text-center hidden-xs");
+      for (int i = 0; i < image.Length; i++)
+      {
+        var a = image[i].GetElementsByTagName("A");
+        if (a.Length >0 )
+        {
+          if(i == image.Length-1)
+            elem.UrlImage = a[0].GetAttribute("href");
+          else
+            elem.UrlImage = a[0].GetAttribute("href")+";";
+        }
+      }
       if (image.Length > 0)
       {
         elem.UrlImage = image[0].GetAttribute("src");
