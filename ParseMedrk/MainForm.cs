@@ -154,10 +154,10 @@ namespace ParseMedrk
             }
             else if (priceRed.Length > 0)
             {
-              elem.Price = "Не поставляется";
+              elem.Price = "0";
             }
             else
-              elem.Price = "Цена по запросу";
+              elem.Price = "0";
 
             if (!string.IsNullOrEmpty(href))
             {
