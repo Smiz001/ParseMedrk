@@ -9,10 +9,12 @@ namespace ParseMedrk.Export
   public class Excel
   {
     private List<Element> listElements;
+    private string filePath;
 
-    public Excel(List<Element> list)
+    public Excel(List<Element> list, string filePath)
     {
       listElements = new List<Element>(list);
+      this.filePath = filePath;
     }
 
     public void ExecuteExport()
@@ -32,7 +34,7 @@ namespace ParseMedrk.Export
         CreateTitle(worksheet);
         FillInfo(worksheet);
 
-        workbook.SaveAs(@"D:\ParserInfo\Medr\Medr.xlsx"); ;
+        workbook.SaveAs(filePath); ;
         workbook.Close();
         excel.Quit();
       }

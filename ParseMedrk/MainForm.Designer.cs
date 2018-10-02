@@ -32,9 +32,10 @@
       this.btDownloadData = new System.Windows.Forms.Button();
       this.dgvMainInfo = new System.Windows.Forms.DataGridView();
       this.cmsForDg = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.показатьОписаниеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.btExport = new System.Windows.Forms.Button();
       this.sfdExport = new System.Windows.Forms.SaveFileDialog();
-      this.показатьОписаниеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.показатьХарактеристикуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       ((System.ComponentModel.ISupportInitialize)(this.dgvMainInfo)).BeginInit();
       this.cmsForDg.SuspendLayout();
       this.SuspendLayout();
@@ -69,9 +70,17 @@
       // cmsForDg
       // 
       this.cmsForDg.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.показатьОписаниеToolStripMenuItem});
+            this.показатьОписаниеToolStripMenuItem,
+            this.показатьХарактеристикуToolStripMenuItem});
       this.cmsForDg.Name = "contextMenuStrip1";
-      this.cmsForDg.Size = new System.Drawing.Size(181, 26);
+      this.cmsForDg.Size = new System.Drawing.Size(213, 70);
+      // 
+      // показатьОписаниеToolStripMenuItem
+      // 
+      this.показатьОписаниеToolStripMenuItem.Name = "показатьОписаниеToolStripMenuItem";
+      this.показатьОписаниеToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+      this.показатьОписаниеToolStripMenuItem.Text = "Показать описание";
+      this.показатьОписаниеToolStripMenuItem.Click += new System.EventHandler(this.показатьОписаниеToolStripMenuItem_Click);
       // 
       // btExport
       // 
@@ -84,12 +93,12 @@
       this.btExport.UseVisualStyleBackColor = true;
       this.btExport.Click += new System.EventHandler(this.btExport_Click);
       // 
-      // показатьОписаниеToolStripMenuItem
+      // показатьХарактеристикуToolStripMenuItem
       // 
-      this.показатьОписаниеToolStripMenuItem.Name = "показатьОписаниеToolStripMenuItem";
-      this.показатьОписаниеToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-      this.показатьОписаниеToolStripMenuItem.Text = "Показать описание";
-      this.показатьОписаниеToolStripMenuItem.Click += new System.EventHandler(this.показатьОписаниеToolStripMenuItem_Click);
+      this.показатьХарактеристикуToolStripMenuItem.Name = "показатьХарактеристикуToolStripMenuItem";
+      this.показатьХарактеристикуToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+      this.показатьХарактеристикуToolStripMenuItem.Text = "Показать характеристику";
+      this.показатьХарактеристикуToolStripMenuItem.Click += new System.EventHandler(this.показатьХарактеристикуToolStripMenuItem_Click);
       // 
       // MainForm
       // 
@@ -116,6 +125,7 @@
     private System.Windows.Forms.Button btExport;
     private System.Windows.Forms.SaveFileDialog sfdExport;
     private System.Windows.Forms.ToolStripMenuItem показатьОписаниеToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem показатьХарактеристикуToolStripMenuItem;
   }
 }
 

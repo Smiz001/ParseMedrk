@@ -180,7 +180,7 @@ namespace ParseMedrk
       var childs = about.Children;
       foreach (var p in childs)
       {
-        if (p.TagName == "P")
+        if (p.TagName == "P" || p.TagName == "SPAN")
           elem.Description += p.TextContent;
       }
 
@@ -195,8 +195,28 @@ namespace ParseMedrk
 
       for (int i = 0; i < table.Length; i++)
       {
-        if (table[i].TextContent.Contains("Наименование") && elem.Characteristics.Count == 0)
-          ParseTable(elem, table[i]);
+        if (elem.Characteristics.Count == 0)
+        {
+          var chldsTable = table[i].GetElementsByTagName("TABLE");
+          if (chldsTable.Length > 0)
+          {
+            for (int j = 0; j < chldsTable.Length; j++)
+            {
+              if (chldsTable[j].TextContent.Contains("Наименование") || chldsTable[j].TextContent.Contains("Название"))
+              {
+                ParseTable(elem, table[i]);
+                break;
+              }
+            }
+          }
+          else if (table[i].TextContent.Contains("Наименование") || table[i].TextContent.Contains("Название"))
+          {
+            ParseTable(elem, table[i]);
+          }
+        }
+        else
+          break;
+      
       }
       //WriteInFileElement(elem);
       listElements.Add(elem);
@@ -217,7 +237,7 @@ namespace ParseMedrk
         var tds = trs[i].GetElementsByTagName("td");
         if (tds.Length >= 2)
         {
-          if (tds[0].TextContent != "Наименование")
+          if (tds[0].TextContent != "Наименование" && !tds[0].TextContent.Contains("Таблица 1"))
           {
             elem.Characteristics.Add(new Characteristic { Name = tds[0].TextContent, Value = tds[1].TextContent });
           }
@@ -271,30 +291,30 @@ namespace ParseMedrk
       colUrl.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
       dgvMainInfo.Columns.Add(colUrl);
       
-      sfdExport.Filter = "CSV files(*.csv)|*.csv";
+      sfdExport.Filter = "xlsx files(*.xlsx)|*.xlsx";
     }
 
     private void btExport_Click(object sender, EventArgs e)
     {
       if (listElements.Count > 0)
       {
-        //sfdExport.Title = "Сохранение данных";
-        //if (sfdExport.ShowDialog() == DialogResult.OK)
-        //{
-        //  mainFilePath = sfdExport.FileName;
-        //  using (var sw = new StreamWriter(mainFilePath))
-        //  {
-        //    sw.WriteLine("Категория;Подкатегория;Id;Наименование;Цена;Описание;Информация с таблиц;Ссылка на картинку");
+        sfdExport.Title = "Сохранение данных";
+        if (sfdExport.ShowDialog() == DialogResult.OK)
+        {
+          mainFilePath = sfdExport.FileName;
+          var export = new Excel(listElements.ToList(), mainFilePath);
+          export.ExecuteExport();
+          //using (var sw = new StreamWriter(mainFilePath))
+          //{
+          //  sw.WriteLine("Категория;Подкатегория;Id;Наименование;Цена;Описание;Информация с таблиц;Ссылка на картинку");
 
-        //    foreach (var element in listElements)
-        //    {
-        //      WriteInFileElement(element, sw);
-        //    }
-        //  }
-        //  MessageBox.Show("Выгрузка выполнена");
-        //}
-        var export = new Excel(listElements.ToList());
-        export.ExecuteExport();
+          //  foreach (var element in listElements)
+          //  {
+          //    WriteInFileElement(element, sw);
+          //  }
+          //}
+          MessageBox.Show("Выгрузка выполнена");
+        }
       }
     }
 
@@ -346,6 +366,11 @@ namespace ParseMedrk
         dgvMainInfo.Rows[e.RowIndex].Selected = true;
         dgvMainInfo.Focus();
       }
+
+    }
+
+    private void показатьХарактеристикуToolStripMenuItem_Click(object sender, EventArgs e)
+    {
 
     }
   }

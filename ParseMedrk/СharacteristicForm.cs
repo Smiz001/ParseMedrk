@@ -17,6 +17,9 @@ namespace ParseMedrk
     {
       InitializeComponent();
       this.element = elem;
+
+      var bindList = new BindingList<Characteristic>(elem.Characteristics);
+      dgvCharacteristic.DataSource = bindList;
     }
 
     private void СharacteristicForm_Load(object sender, EventArgs e)
