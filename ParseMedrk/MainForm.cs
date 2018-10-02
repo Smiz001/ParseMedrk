@@ -23,8 +23,7 @@ namespace ParseMedrk
     }
 
     private string mainLink = @"http://www.medrk.ru/shop/";
-    private string direcPath = @"D:\ParserInfo\Medr\";
-    private string mainFilePath = @"D:\ParserInfo\Medr\Medr.csv";
+    private string mainFilePath = string.Empty;
     private BindingList<Element> listElements = new BindingList<Element>();
 
     private void btDownloadData_Click(object sender, EventArgs e)
@@ -196,11 +195,11 @@ namespace ParseMedrk
             elem.UrlImage += a[0].GetAttribute("href")+";";
         }
       }
-      if (image.Length > 0)
-      {
-        elem.UrlImage = image[0].GetAttribute("src");
-        //webClient.DownloadFile(elem.UrlImage, $"{direcPath}{elem.NameElement}.jpg");
-      }
+      //if (image.Length > 0)
+      //{
+      //  elem.UrlImage = image[0].GetAttribute("src");
+      //  //webClient.DownloadFile(elem.UrlImage, $"{direcPath}{elem.NameElement}.jpg");
+      //}
 
       var table = document.GetElementsByTagName("TABLE");
 
@@ -295,7 +294,7 @@ namespace ParseMedrk
       colId.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
       dgvMainInfo.Columns.Add(colId);
 
-      DataGridViewColumn colUrl = new DataGridViewLinkColumn();
+      DataGridViewColumn colUrl = new DataGridViewTextBoxColumn();
       colUrl.DataPropertyName = "UrlImage";
       colUrl.HeaderText = "Адрес изображения";
       colUrl.Name = "UrlImage";
@@ -331,21 +330,21 @@ namespace ParseMedrk
 
     private void dgvMainInfo_CellClick(object sender, DataGridViewCellEventArgs e)
     {
-      if (dgvMainInfo.SelectedColumns.Count == 0)
-      {
-        if (dgvMainInfo.SelectedRows.Count == 0)
-        {
-          if (dgvMainInfo.SelectedCells.Count == 1)
-          {
-            var cell = dgvMainInfo.SelectedCells[0];
-            if (dgvMainInfo.Columns[cell.ColumnIndex].Name == "UrlImage")
-            {
-              var url = dgvMainInfo.SelectedCells[0].Value.ToString();
-              Process.Start(url);
-            }
-          }
-        }
-      }
+      //if (dgvMainInfo.SelectedColumns.Count == 0)
+      //{
+      //  if (dgvMainInfo.SelectedRows.Count == 0)
+      //  {
+      //    if (dgvMainInfo.SelectedCells.Count == 1)
+      //    {
+      //      var cell = dgvMainInfo.SelectedCells[0];
+      //      if (dgvMainInfo.Columns[cell.ColumnIndex].Name == "UrlImage")
+      //      {
+      //        var url = dgvMainInfo.SelectedCells[0].Value.ToString();
+      //        Process.Start(url);
+      //      }
+      //    }
+      //  }
+      //}
     }
 
     private void показатьОписаниеToolStripMenuItem_Click(object sender, EventArgs e)
