@@ -191,9 +191,9 @@ namespace ParseMedrk
         if (a.Length >0 )
         {
           if(i == image.Length-1)
-            elem.UrlImage = a[0].GetAttribute("href");
+            elem.UrlImage += a[0].GetAttribute("href");
           else
-            elem.UrlImage = a[0].GetAttribute("href")+";";
+            elem.UrlImage += a[0].GetAttribute("href")+";";
         }
       }
       if (image.Length > 0)
