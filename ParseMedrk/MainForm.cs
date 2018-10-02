@@ -176,12 +176,28 @@ namespace ParseMedrk
       var document = parser.Parse(responce);
 
       var about = document.GetElementById("about");
-      var childs = about.Children;
-      foreach (var p in childs)
+      if(about.Children.Count() == 1)
       {
-        if (p.TagName == "P" || p.TagName == "SPAN")
-          elem.Description += p.TextContent;
+        if(about.Children[0].TagName == "DIV")
+        {
+          var chldsDiv = about.Children[0].Children;
+          foreach (var ch in chldsDiv)
+          {
+            if (ch.TagName == "P" || ch.TagName == "SPAN")
+              elem.Description += ch.TextContent;
+          }
+        }
       }
+      else
+      {
+        var childs = about.Children;
+        foreach (var p in childs)
+        {
+          if (p.TagName == "P" || p.TagName == "SPAN")
+            elem.Description += p.TextContent;
+        }
+      }
+    
 
       var image = document.GetElementsByClassName("col-md-3 col-sm-3 text-center hidden-xs");
       for (int i = 0; i < image.Length; i++)
@@ -195,11 +211,6 @@ namespace ParseMedrk
             elem.UrlImage += a[0].GetAttribute("href")+";";
         }
       }
-      //if (image.Length > 0)
-      //{
-      //  elem.UrlImage = image[0].GetAttribute("src");
-      //  //webClient.DownloadFile(elem.UrlImage, $"{direcPath}{elem.NameElement}.jpg");
-      //}
 
       var table = document.GetElementsByTagName("TABLE");
 
