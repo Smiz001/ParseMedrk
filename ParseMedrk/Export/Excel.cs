@@ -60,7 +60,7 @@ namespace ParseMedrk.Export
       sheet.Cells[1, 5] = "Id";
       sheet.Cells[1, 6] = "Описание";
       sheet.Cells[1, 7] = "Адрес картинки";
-      sheet.Cells[1, 8] = "Табличная информация";
+      //sheet.Cells[1, 8] = "Табличная информация";
     }
 
     private void FillInfo(Worksheet sheet)
@@ -74,7 +74,12 @@ namespace ParseMedrk.Export
         sheet.Cells[startRow, 4] = elem.Price;
         sheet.Cells[startRow, 5] = elem.Id;
         sheet.Cells[startRow, 6] = elem.Description;
-        sheet.Cells[startRow, 7] = elem.UrlImage;
+        var arrUrl = elem.UrlImage.Split(';');
+        for (int i = 0; i < arrUrl.Length; i++)
+        {
+          sheet.Cells[startRow, 7+i] = arrUrl[i];
+        }
+        //sheet.Cells[startRow, 7] = elem.UrlImage;
         startRow++;
       }
 

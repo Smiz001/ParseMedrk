@@ -185,6 +185,10 @@ namespace ParseMedrk
               elem.Description += ch.TextContent;
           }
         }
+        else if (about.Children[0].TagName == "P")
+        {
+          elem.Description += about.Children[0].TextContent;
+        }
       }
       else
       {
