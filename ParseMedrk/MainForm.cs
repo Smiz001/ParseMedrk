@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -186,6 +184,10 @@ namespace ParseMedrk
             if (ch.TagName == "P" || ch.TagName == "SPAN")
               elem.Description += ch.TextContent;
           }
+        }
+        else if (about.Children[0].TagName == "P")
+        {
+          elem.Description += about.Children[0].TextContent;
         }
       }
       else
