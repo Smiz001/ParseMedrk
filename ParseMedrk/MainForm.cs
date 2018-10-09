@@ -23,7 +23,7 @@ namespace ParseMedrk
     }
 
     private string mainLink = @"http://www.medrk.ru/shop/";
-    private string mainFilePath = string.Empty;
+    private string mainFilePath;
     private BindingList<Element> listElements = new BindingList<Element>();
 
     private void btDownloadData_Click(object sender, EventArgs e)
@@ -197,7 +197,30 @@ namespace ParseMedrk
             elem.Description += p.TextContent;
         }
       }
-    
+
+      if (string.IsNullOrWhiteSpace(elem.Description))
+      {
+        var childs = about.Children;
+        foreach (var ch in childs)
+        {
+          if (ch.TagName == "DIV")
+          {
+            ParseDivDescription(elem, ch);
+          }
+        }
+      }
+
+      if (string.IsNullOrWhiteSpace(elem.Description))
+      {
+        var childs = about.Children;
+        foreach (var ch in childs)
+        {
+          if (ch.TagName == "P")
+          {
+            elem.Description += ch.TextContent;
+          }
+        }
+      }
 
       var image = document.GetElementsByClassName("col-md-3 col-sm-3 text-center hidden-xs");
       for (int i = 0; i < image.Length; i++)
@@ -241,6 +264,16 @@ namespace ParseMedrk
       }
       //WriteInFileElement(elem);
       listElements.Add(elem);
+    }
+
+    private void ParseDivDescription(Element element, IElement divElement)
+    {
+      var divCh = divElement.Children;
+      foreach (var ch in divCh)
+      {
+        if (ch.TagName == "P" || ch.TagName == "SPAN" || ch.TagName == "UL")
+          element.Description += ch.TextContent;
+      }
     }
 
     private void WriteInFileElement(Element elem, StreamWriter sw)
