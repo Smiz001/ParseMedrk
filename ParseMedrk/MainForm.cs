@@ -108,12 +108,12 @@ namespace ParseMedrk
 
         if (countPageElements.Length > 2)
         {
-          countPage = countPageElements[0].GetElementsByTagName("LI").Length - 1;
+          countPage = countPageElements.Length - 1;
         }
 
         for (int i = 1; i <= countPage; i++)
         {
-          Thread.Sleep(random.Next(1000, 3000));
+          Thread.Sleep(random.Next(1000, 1500));
           urlSubCategory += $@"&page={i}/";
           responce = webClient.DownloadString(urlSubCategory);
           document = parser.Parse(responce);
@@ -271,6 +271,7 @@ namespace ParseMedrk
       
       }
       //WriteInFileElement(elem);
+      elem.Description = elem.Description.Replace("  ", "").Replace("\n", "");
       listElements.Add(elem);
     }
 
