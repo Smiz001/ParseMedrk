@@ -184,12 +184,18 @@ namespace ParseMedrk
             if (ch.TagName == "P" || ch.TagName == "SPAN")
               elem.Description += ch.TextContent;
           }
+          if(string.IsNullOrWhiteSpace(elem.Description))
+          {
+            elem.Description = about.Children[0].TextContent;
+          }
         }
         else if (about.Children[0].TagName == "P")
         {
           elem.Description += about.Children[0].TextContent;
         }
       }
+      else if (about.Children.Count() == 0)
+        elem.Description = about.TextContent;
       else
       {
         var childs = about.Children;
