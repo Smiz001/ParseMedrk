@@ -22,7 +22,19 @@ namespace ParseMedrk
 
     private string mainLink = @"http://www.medrk.ru/shop/";
     private string mainFilePath;
+    private static object locker = new object();
     private BindingList<Element> listElements = new BindingList<Element>();
+    private delegate void AddToListDelegate(BindingList<Element> list, Element elem);
+
+    private void AddList(BindingList<Element> list, Element item)
+    {
+      if (InvokeRequired)
+      {
+        Invoke(new AddToListDelegate(AddList), new object[] { list, item });
+        return;
+      }
+      list.Add(item);
+    }
 
     private void btDownloadData_Click(object sender, EventArgs e)
     {
@@ -42,29 +54,36 @@ namespace ParseMedrk
       if (collections.Length > 0)
       {
         Cursor.Current = Cursors.WaitCursor;
-        ParseAll(collections);
+        //ParseAll(collections);
+        for (int i = 0; i < collections.Length; i++)
+        {
+          Thread thread = new Thread(ParseAll);
+          thread.Start(collections[i]);
+
+        }
         Cursor.Current = Cursors.Default;
       }
       dgvMainInfo.DataSource = listElements;
-      MessageBox.Show("Загрузка выполнена");
     }
 
-    private void ParseAll(IHtmlCollection<IElement> collections)
+    private void ParseAll(object element)
     {
+      var elem = element as IElement;
       var random = new Random();
+      var href = elem.GetElementsByClassName("hidden-xs")[0].GetAttribute("href").Replace("/shop/", "");
+      var nameCategory = elem.GetElementsByClassName("img-responsive")[0].GetAttribute("alt");
+      var ul = elem.GetElementsByClassName("catalog-parts hidden-xs");
 
-      foreach (var element in collections)
+      if (ul.Length > 0)
       {
-        var href = element.GetElementsByClassName("hidden-xs")[0].GetAttribute("href").Replace("/shop/", "");
-        var nameCategory = element.GetElementsByClassName("img-responsive")[0].GetAttribute("alt");
-        var ul = element.GetElementsByClassName("catalog-parts hidden-xs");
-        if (ul.Length > 0)
-        {
-          ParseCategory($"{mainLink}{href}", nameCategory);
-        }
-        else
-          ParseSubCategory($"{mainLink}{href}&kol_page=25", nameCategory, "");
+        // thread = new Thread()
+        ParseCategory($"{mainLink}{href}", nameCategory);
       }
+      else
+      {
+        ParseSubCategory($"{mainLink}{href}&kol_page=25", nameCategory, "");
+      }
+      MessageBox.Show($"Загрузка выполнена - {element}");
     }
 
     private void ParseCategory(string urlCategory, string nameCategory)
@@ -92,6 +111,7 @@ namespace ParseMedrk
     {
       var nameSubCatLocl = nameSubCat.Replace("  ", "").Replace("\n", "");
       var random = new Random();
+      Thread.Sleep(random.Next(1000,2000));
       using (var webClient = new WebClient())
       {
         ServicePointManager.Expect100Continue = true;
@@ -272,7 +292,11 @@ namespace ParseMedrk
       }
       //WriteInFileElement(elem);
       elem.Description = elem.Description.Replace("  ", "").Replace("\n", "");
-      listElements.Add(elem);
+
+      Monitor.Enter(locker);
+      AddList(listElements, elem);
+      //listElements.Add(elem);
+      Monitor.Exit(locker);
     }
 
     private void ParseDivDescription(Element element, IElement divElement)
