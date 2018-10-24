@@ -171,10 +171,10 @@ namespace ParseMedrk
             }
             else if (priceRed.Length > 0)
             {
-              elem.Price = "0";
+              elem.Price = "1";
             }
             else
-              elem.Price = "0";
+              elem.Price = "1";
 
             if (!string.IsNullOrEmpty(href))
             {
